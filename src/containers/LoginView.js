@@ -8,6 +8,8 @@ import OTPStageView from "../views/auth/OTPStageView";
 import SecretGenStageView from "../views/auth/SecretGenStageView";
 import SecretInputStageView from "../views/auth/SecretInputStageView";
 import LoadingView from "../views/LoadingView";
+import { userEnteredEmail, userSuppliedOTP } from "../controllers/AuthController";
+
 
 export default function LoginView() {
 
@@ -28,22 +30,30 @@ export default function LoginView() {
 
             {loginStage === 0
             ?
-            <EmailStageView/>
+            <EmailStageView onSubmitAction={(inputEmail)=> {
+                userEnteredEmail(inputEmail, setUserEmail, loginStage, setLoginStage)
+            }}/>
             :<div/>}
 
             {loginStage === 1
             ?
-            <OTPStageView/>
+            <OTPStageView email={userEmail} onSubmitAction={(otp)=>{
+                userSuppliedOTP(otp, loginStage, setLoginStage)
+            }}/>
             :<div/>}
 
             {loginStage === 2
             ?
-            <SecretGenStageView/>
+            <SecretGenStageView onSubmitAction={()=> {
+                setLoginStage(3)
+            }}/>
             :<div/>}
 
             {loginStage === 3
             ?
-            <SecretInputStageView/>
+            <SecretInputStageView onSubmitAction={()=> {
+                
+            }}/>
             :<div/>}
 
             {loginStage === -1

@@ -1,12 +1,23 @@
 import styled from "styled-components"
-import { B1, B3, T2 } from "../../utitlity/TypographyStyles"
+import { ConfirmButton } from "../../utitlity/Buttons"
+import { B1, B2, B3, S3, T2 } from "../../utitlity/TypographyStyles"
 
 export default function SecretGenStageView(props) {
+
+    const exampleMneumonic = "Some examples of this technique include “Roy G. Biv” for the colors of the rainbow (red, orange, yellow, green, blue"
     
     return (
         <CentralBlockWrapper>
             <T2>Write down or securely save your secret</T2>
             <B3>This secret will be used to encrypt your messages. Never share it or store in a non-protected environment.</B3>
+
+            <SecretPhraseContainer>
+                <S3>{exampleMneumonic}</S3>
+            </SecretPhraseContainer>
+
+            <ConfirmButton text={"Continue"} action={() => {
+                props.onSubmitAction()
+            }}/>
         </CentralBlockWrapper>
     )
 }
@@ -20,4 +31,12 @@ const CentralBlockWrapper = styled.div`
     align-items: center;
     justify-content: center;
     gap: 20px;
+`
+
+const SecretPhraseContainer = styled.div`
+    width: 60vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 `
