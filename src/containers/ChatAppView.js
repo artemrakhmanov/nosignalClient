@@ -4,26 +4,39 @@ import YourChatsView from "../views/chat/YourChatsView"
 import OnlineAccountsBrowserView from "../views/chat/OnlineAccountsBrowserView"
 import ChatView from "../views/chat/ChatView"
 
-import useWebSocket from 'react-use-websocket';
+import { useEffect, useState } from "react"
+import { openChatWithUser, userRequestedOwnChats, userRequestedOwnID, userRequestedUserList } from "../controllers/ChatController"
+import { useSelector } from "react-redux"
+import { getChatAPI } from "../api/ChatAPI"
 
 export default function ChatAppView() {
+
+    // const publicKey = useSelector(state => state.key.value.publicKey)
+    // const secret = useSelector(state => state.key.value.secret)
     
-    const socketUrl = "wss://127.0.0.1:8000/websocket"
-    const {
-        sendMessage,
-        sendJsonMessage,
-        lastMessage,
-        lastJsonMessage,
-        readyState,
-        getWebSocket,
-      } = useWebSocket(socketUrl, {
-        onOpen: () => {
-            console.log('opened')
-            sendMessage("hello")
-        },
-        //Will attempt to reconnect on all close events, such as server shutting down
-        shouldReconnect: (closeEvent) => true,
-      })
+    const [myUserID, setMyUserID] = useState(null)
+    const [openChat, setOpenChat] = useState(null)
+    //store a decrypted chat secret for the current open chat
+    const [currentDecryptedSecret, setCurrentDecryptedSecret] = useState(null)
+    const [otherUsersList, setOtherUsersList] = useState([])
+    const [myChatsList, setMyChatsList] = useState([])
+
+    useEffect(() => {
+        //get my user ID
+        userRequestedOwnID(setMyUserID)
+        userRequestedUserList(setOtherUsersList)
+        userRequestedOwnChats(setMyChatsList)
+
+        // console.log("pub key:", publicKey)
+        // console.log("priv key: ", secret)
+
+    }, [])
+
+    useEffect(() => {
+        userRequestedOwnChats(setMyChatsList)
+    }, [openChat])
+    
+    
 
     return (
         <div>
@@ -35,12 +48,38 @@ export default function ChatAppView() {
             <ContentWrapper>
                     <ChatViewWrapper>
                         <BrowsersWrapper>
-                            <YourChatsView />
+                            <YourChatsView 
+                                accountList={myChatsList}
+                                myUserID={myUserID}
+                                onAccountSelect={(user)=> {
+                                    //open & get a chat with this user
+                                    console.log("selected from your chats", user)
+                                    openChatWithUser(
+                                        user, myUserID, setOpenChat, setCurrentDecryptedSecret
+                                    )
+                                }}
+                            />
 
-                            <OnlineAccountsBrowserView />
+                            <OnlineAccountsBrowserView 
+                                accountList={otherUsersList}
+                                onAccountSelect={(user)=> {
+                                    //open & get a chat with this user
+                                    console.log("selected from browser", user)
+                                    openChatWithUser(
+                                        user, myUserID, setOpenChat, setCurrentDecryptedSecret
+                                    )
+                                }}
+                            />
                         </BrowsersWrapper>
 
-                        <ChatView/>
+                        <ChatView
+                            currentChat={openChat}
+                            myUserID={myUserID}
+                            currentSecret={currentDecryptedSecret}
+                            onMessageSend={(plaintext)=> {
+                                //call 
+                            }}
+                        />
                     </ChatViewWrapper>
             </ContentWrapper>
         </div>
@@ -75,7 +114,7 @@ const ChatViewWrapper = styled.div`
     height: 80vh;
     width: 80vw;
     display: grid;
-    grid-gap: 16px 16px;
+    grid-gap: 7px 7px;
     grid-template-columns: ${ "40% 60%"};
     grid-auto-columns: 40% 40%;
     align-items: start;
@@ -85,7 +124,7 @@ const BrowsersWrapper = styled.div`
     height: 100%;
     width: 100%;
     display: grid;
-    grid-gap: 16px;
+    grid-gap: 7px;
     grid-template-rows: 1fr 1fr;
     align-items: start;
 `

@@ -1,9 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit'
+import keyReducer from './keyReducer'
 import loginReducer from './loginReducer'
 
 export default configureStore({
     reducer: {
-        login: loginReducer
+        login: loginReducer,
+        key: keyReducer
     },
     middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
