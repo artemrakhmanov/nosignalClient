@@ -1,5 +1,5 @@
-import { pki, random } from "node-forge";
-import { generateMnemonic, mnemonicToSeed } from "bip39";
+import { pki } from "node-forge";
+import { generateMnemonic } from "bip39";
 const cryptico = require('cryptico');
 
 export function getMnemonicPhrase() {
@@ -11,7 +11,7 @@ export async function generateRSA(mnemonic) {
     try {
 
         var secret = cryptico.generateRSAKey(mnemonic, 1024)
-        var publicKey = cryptico.publicKeyString(keypair)
+        var publicKey = cryptico.publicKeyString(secret)
 
         return {
             secret: secret,

@@ -37,11 +37,26 @@ export async function signInWithOTPAPI(otp) {
     }
 }
 
-export async function supplyPublicKey(publicKey, jwt) {
+export async function supplyPublicKey(publicKey) {
 
-
-
-    //if success - save authorized JWT & change isLoggedIn
+    try {
+        const endpoint = rootAPI + "auth/signInWithKey"
+        const payload = {
+            publicKey: publicKey
+        }
+        const cookies = new Cookies()
+        const token = cookies.get("jwt")
+        const response = await axios.post(endpoint, payload, {
+            headers: {
+                "x-access-token": token
+            }
+        })
+        console.log(response)
+        return response.data
+    } catch(error) {
+        console.log("error supplyPublicKey", error)
+        throw error
+    }
 }
 
 export async function checkIfUserSetUpAPI() {
@@ -49,7 +64,6 @@ export async function checkIfUserSetUpAPI() {
         const endpoint = rootAPI + "auth/userIsSetUp"
         const cookies = new Cookies()
         const token = cookies.get("jwt")
-        console.log(cookies.getAll())
         const response = await axios.get(endpoint, {
             headers: {
                 "x-access-token": token

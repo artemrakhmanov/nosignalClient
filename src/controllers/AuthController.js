@@ -1,5 +1,9 @@
-import { checkIfUserSetUpAPI, requestOTPWithEmailAPI, signInWithOTPAPI } from "../api/AuthAPI"
+import { checkIfUserSetUpAPI, requestOTPWithEmailAPI, signInWithOTPAPI, supplyPublicKey } from "../api/AuthAPI"
 import Cookies from 'universal-cookie';
+import { generateRSA } from "./EncryptionController";
+import store from "../reducers/store"
+import { addPublicKey, addSecret } from "../reducers/keyReducer";
+import { logIn } from "../reducers/loginReducer";
 
 export async function userEnteredEmail(
     inputEmail,
@@ -81,19 +85,28 @@ export async function userSuppliedOTP(
 }
 
 export async function userSuppliedSecretPhrase(
-    mnemonic
+    mnemonic, setLoginStage
 ) {
     try {
+        setLoginStage(-1)
         //generate keypair from mnemonic
-
+        const keypair = await generateRSA(mnemonic)
         //supply public key to the server
-
+        const response = await supplyPublicKey(keypair.publicKey)
         //retrieve and save a new app authorized JWT
-
+        const cookies = new Cookies()
+        cookies.set("jwt", response.token, {path: '/'})
         //store private and public key in redux store
+        store.dispatch(addPublicKey(keypair.publicKey))
+        store.dispatch(addSecret(keypair.secret))
+        store.dispatch(logIn())
+        return true
 
     } catch (error) {
-        
+        alert("Error happened during secret generation")
+        console.log("error", error)
+        setLoginStage(3)
+        return false
     }
 }
 

@@ -8,7 +8,7 @@ import OTPStageView from "../views/auth/OTPStageView";
 import SecretGenStageView from "../views/auth/SecretGenStageView";
 import SecretInputStageView from "../views/auth/SecretInputStageView";
 import LoadingView from "../views/LoadingView";
-import { userEnteredEmail, userSuppliedOTP } from "../controllers/AuthController";
+import { userEnteredEmail, userSuppliedOTP, userSuppliedSecretPhrase } from "../controllers/AuthController";
 
 
 export default function LoginView() {
@@ -51,8 +51,8 @@ export default function LoginView() {
 
             {loginStage === 3
             ?
-            <SecretInputStageView onSubmitAction={()=> {
-                
+            <SecretInputStageView onSubmitAction={(mnemonic)=> {
+                userSuppliedSecretPhrase(mnemonic, setLoginStage)
             }}/>
             :<div/>}
 
