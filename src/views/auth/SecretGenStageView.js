@@ -1,10 +1,19 @@
+import { useEffect, useState } from "react"
 import styled from "styled-components"
+import { getMnemonicPhrase, test } from "../../controllers/EncryptionController"
 import { ConfirmButton } from "../../utitlity/Buttons"
 import { B1, B2, B3, S3, T2 } from "../../utitlity/TypographyStyles"
 
 export default function SecretGenStageView(props) {
 
     const exampleMneumonic = "Some examples of this technique include “Roy G. Biv” for the colors of the rainbow (red, orange, yellow, green, blue"
+
+    const [mnemonic, setMnemonic] = useState("")
+
+    useEffect(() => {
+      setMnemonic(getMnemonicPhrase())
+    }, [])
+    
     
     return (
         <CentralBlockWrapper>
@@ -12,12 +21,13 @@ export default function SecretGenStageView(props) {
             <B3>This secret will be used to encrypt your messages. Never share it or store in a non-protected environment.</B3>
 
             <SecretPhraseContainer>
-                <S3>{exampleMneumonic}</S3>
+                <S3>{mnemonic}</S3>
             </SecretPhraseContainer>
 
             <ConfirmButton text={"Continue"} action={() => {
                 props.onSubmitAction()
             }}/>
+
         </CentralBlockWrapper>
     )
 }

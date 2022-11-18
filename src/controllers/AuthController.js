@@ -80,7 +80,20 @@ export async function userSuppliedOTP(
     }
 }
 
-export async function userSuppliedSecretPhrase() {
+export async function userSuppliedSecretPhrase(
+    mnemonic
+) {
+    try {
+        //generate keypair from mnemonic
 
+        //supply public key to the server
+
+        //retrieve and save a new app authorized JWT
+
+        //store private and public key in redux store
+
+    } catch (error) {
+        
+    }
 }
 
