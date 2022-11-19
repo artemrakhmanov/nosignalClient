@@ -74,3 +74,13 @@ export const B3T = styled(Font)`
 font-weight: 300;
 font-size: 16px;
 `
+
+export const B4 = styled(Font)`
+font-weight: 400;
+font-size: 12px;
+`
+
+export const B4T = styled(Font)`
+font-weight: 300;
+font-size: 12px;
+`

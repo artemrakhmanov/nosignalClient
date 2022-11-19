@@ -154,8 +154,12 @@ export async function sendMessage(plaintext, aesKeyString, senderID, receiverID,
         //send
         const updatedMessagesArray = await sendMessageAPI(cipher, iv, timeCipher, timeIV, senderID, receiverID, chatID)
         console.log(updatedMessagesArray)
+
+        //decrypt
+        const decryptedMessages = decryptMessagesArray(updatedMessagesArray, aesKeyString)
+
         //return new messages object
-        return updatedMessagesArray
+        return decryptedMessages
     } catch (error) {
         console.log(error)
         alert(error.message)
@@ -183,17 +187,32 @@ export async function getDecryptedMessages(chatID, aesKeyString) {
 function decryptMessagesArray(messages, aesKeyString) {
     var result = []
     console.log(messages)
-    for (const message of messages) {
-        const plaintext = decryptAES(message.iv, message.body, aesKeyString)
-        const timestampString = decryptAES(message.timeIV, message.timeCipher, aesKeyString)
+
+    messages.forEach((element, index, array)=> {
+        const plaintext = decryptAES(element.iv, element.body, aesKeyString)
+        const timestampString = decryptAES(element.ivTimestamp, element.timestamp, aesKeyString)
         const decrypted = {
-            _id: message._id,
-            senderID: message.senderID,
-            receiverID: message.receiverID,
+            _id: element._id,
+            senderID: element.senderID,
+            receiverID: element.receiverID,
             timestamp: timestampString,
             body: plaintext
         }
         result.push(decrypted)
-    }
-    console.log(result)
+    })
+
+    // for (const message of messages) {
+    //     const plaintext = decryptAES(message.iv, message.body, aesKeyString)
+    //     const timestampString = decryptAES(message.timeIV, message.timeCipher, aesKeyString)
+    //     const decrypted = {
+    //         _id: message._id,
+    //         senderID: message.senderID,
+    //         receiverID: message.receiverID,
+    //         timestamp: timestampString,
+    //         body: plaintext
+    //     }
+    //     result.push(decrypted)
+    // }
+    console.log("decrypted:",result)
+    return result
 }

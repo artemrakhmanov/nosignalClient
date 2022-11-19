@@ -97,7 +97,26 @@ export async function initialiseChatAPI(
 //send message to the chat
 export async function sendMessageAPI(cipher, iv, timeCipher, timeIV, senderID, receiverID, chatID) {
     try {
-
+        const payload = {
+            cipher: cipher,
+            iv: iv,
+            timeCipher: timeCipher,
+            timeIV: timeIV,
+            senderID: senderID,
+            receiverID: receiverID,
+            chatID: chatID
+        }
+        const endpoint = rootAPI + "chat/sendMessage"
+        const cookies = new Cookies()
+        const token = cookies.get("jwt")
+        
+        const response = await axios.post(endpoint, payload, {
+            headers: {
+                "x-access-token": token
+            }
+        })
+        console.log(response)
+        return response.data.messages
     } catch(error) {
         throw error
     }
@@ -105,7 +124,20 @@ export async function sendMessageAPI(cipher, iv, timeCipher, timeIV, senderID, r
 
 export async function getMessagesAPI(chatID) {
     try {
-
+        const payload = {
+            chatID: chatID
+        }
+        const endpoint = rootAPI + "chat/getMessages"
+        const cookies = new Cookies()
+        const token = cookies.get("jwt")
+        
+        const response = await axios.post(endpoint, payload, {
+            headers: {
+                "x-access-token": token
+            }
+        })
+        console.log(response.data)
+        return response.data.messages
     } catch (error) {
         throw error
     }

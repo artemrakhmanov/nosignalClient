@@ -108,6 +108,7 @@ const ContentWrapper = styled.div`
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    /* overflow: auto; */
 `
 
 const ChatViewWrapper = styled.div`
@@ -118,6 +119,7 @@ const ChatViewWrapper = styled.div`
     grid-template-columns: ${ "40% 60%"};
     grid-auto-columns: 40% 40%;
     align-items: start;
+    /* overflow: auto; */
 `
 
 const BrowsersWrapper = styled.div`

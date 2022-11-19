@@ -68,8 +68,8 @@ const AccountText = styled(B3)`
 const ChatsWrapper = styled.div`
     width: 100%;
     top: 50px;
-    overflow-x: scroll;
-    overflow-y: hidden;
+    overflow-x: hidden;
+    overflow-y: scroll;
     display: flex;
     flex-direction: column;
     gap: 10px;
